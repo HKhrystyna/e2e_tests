@@ -24,9 +24,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-    implementation('io.github.cdimascio:java-dotenv:5.2.2') {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
-    }
+    implementation('io.github.cdimascio:java-dotenv:5.2.2')
     implementation('org.checkerframework:checker-qual:3.37.0')
 
     testImplementation('com.codeborne:selenide:7.6.1')

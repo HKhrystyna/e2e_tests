@@ -83,8 +83,7 @@ public class ProjectPageTests extends BaseTest {
 
     private void waitForProjectPageIsLoaded(String targetProjectName) {
         $(".first h2").shouldHave(text(targetProjectName));
-        $("[href='/projects/manufacture-own/readme']").shouldBe(visible).shouldHave(text("Readme"));
-
+        $(".sticky-header [href$='/readme']").shouldBe(visible).shouldHave(text("Readme"));
     }
 
     private void selectProject(String targetProjectName) {
