@@ -1,58 +1,135 @@
 package io.testomat.e2e_tests;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
+import static io.testomat.e2e_tests.utils.StringParsers.parseIntegerFromString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProjectPageTests {
+public class ProjectPageTests extends BaseTest {
 
-    @Test
-    public void userCanFindProjectWithTests() {
-        open("https://app.testomat.io/");
+    static String baseUrl = env.get("BASE_URL");
+    static String email = env.get("EMAIL");
+    static String password = env.get("PASSWORD");
+    String targetProjectName = "Manufacture Own";
 
-        //login
-        $("#content-desktop #user_email").setValue("grynyshyn2002@gmail.com");
-        $("#content-desktop #user_password").setValue("khrynyshyn_QA123");
-        $("#content-desktop #user_remember_me").click();
-        $("#content-desktop [name=\"commit\"]").click();
-        $(".common-flash-success").shouldBe(visible);
+    @BeforeAll
+    static void openTestomatAndLogin() {
+        open(baseUrl);
 
-        //search project
-        $("#search").setValue("Manufacture Own");
+        loginUser(email, password);
+    }
 
-        //select project
-        $(byText("Manufacture Own")).click();
-        sleep(10000);
-
-        //wait for page to load
-        $("h2").shouldHave(text("Manufacture Own"));
+    @BeforeEach
+    void openHomePage() {
+        open(baseUrl);
     }
 
     @Test
-    public void userCanCreateNewProject() {
-        open("https://app.testomat.io/");
+    public void userCanFindProjectWithTests() {
+        searchForProject(targetProjectName);
 
-        //login
-        $("#content-desktop #user_email").setValue("grynyshyn2002@gmail.com");
-        $("#content-desktop #user_password").setValue("khrynyshyn_QA123");
+        selectProject(targetProjectName);
+
+        waitForProjectPageIsLoaded(targetProjectName);
+    }
+
+    @Test
+    public void userCanFindProjectWithoutTests() {
+        searchForProject(targetProjectName);
+
+        SelenideElement targetProject = countOfProjectsShouldBeEqualTo(1).first();
+
+        countOfTestsCasesShouldBeEqualTo(targetProject, 0);
+
+        projectShouldHaveCorrectBadge(targetProject, "Classical");
+    }
+
+    @Test
+    public void userCanSwitchListAndCardViews() {
+        switchFromCardToListView();
+
+        projectListShouldNotBeEmpty();
+
+        switchFromListToCardView();
+    }
+
+    @Test
+    public void userCanOpenFreeProjects() {
+        openSpecificProjectsPage("Free Projects");
+
+        freePlanShouldBeOnFreeProjectsPage();
+
+        openSpecificProjectsPage("QA Club Lviv");
+    }
+
+
+    public static void loginUser(String email, String password) {
+        $("#content-desktop #user_email").setValue(email);
+        $("#content-desktop #user_password").setValue(password);
         $("#content-desktop #user_remember_me").click();
         $("#content-desktop [name=\"commit\"]").click();
         $(".common-flash-success").shouldBe(visible);
+    }
 
-        //create project
-        $("a.common-btn-primary[href='/projects/new']").click();
-        $("h2").shouldHave(text("New Project"));
-        $("#project_title").setValue("New Project");
-        $("[name='commit']").click();
+    private void waitForProjectPageIsLoaded(String targetProjectName) {
+        $(".first h2").shouldHave(text(targetProjectName));
+        $("[href='/projects/manufacture-own/readme']").shouldBe(visible).shouldHave(text("Readme"));
 
+    }
 
-        //wait for project to create
-        sleep(10000);
-        $("#welcometotestomatio").shouldBe(visible);
-        $(".detail-view-header-wrapper .md-icon.md-icon-close").click();
-        $("h2").shouldHave(text("New Project"));
+    private void selectProject(String targetProjectName) {
+        $(byText(targetProjectName)).click();
+    }
+
+    private void searchForProject(String targetProjectName) {
+        $("#search").setValue(targetProjectName);
+    }
+
+    private void projectShouldHaveCorrectBadge(SelenideElement targetProject, String expectedBadge) {
+        targetProject.$("a .common-badge-project-default").shouldHave(text(expectedBadge));
+    }
+
+    private void countOfTestsCasesShouldBeEqualTo(SelenideElement targetProject, int expectedCount) {
+        String countOfTests = targetProject.$("p").getText();
+        Integer actualCountOfTests = parseIntegerFromString(countOfTests);
+        assertEquals(expectedCount, actualCountOfTests);
+    }
+
+    @NonNull
+    private ElementsCollection countOfProjectsShouldBeEqualTo(int expectedCount) {
+        return $$("#grid ul li").filter(visible).shouldHave(size(expectedCount));
+    }
+
+    private void switchFromCardToListView() {
+        $("#table-icon").click();
+        $("#myTable").shouldBe(visible);
+    }
+
+    private void switchFromListToCardView() {
+        $("#table-icon").click();
+        $("#grid").shouldBe(visible);
+    }
+
+    private void projectListShouldNotBeEmpty() {
+        $("#team-members .bg-gray-50").shouldBe(visible);
+    }
+
+    private void openSpecificProjectsPage(String optionText) {
+        $("#content-desktop #company_id").click();
+        $$("#content-desktop #company_id option").findBy(text(optionText)).click();
+    }
+
+    private void freePlanShouldBeOnFreeProjectsPage() {
+        $(".common-page-header-left .tooltip-project-plan").shouldHave(text("free plan"));
     }
 }
