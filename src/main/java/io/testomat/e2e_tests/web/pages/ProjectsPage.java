@@ -19,12 +19,14 @@ public class ProjectsPage {
         Selenide.open("/");
     }
 
-    public void isLoaded() {
+    public ProjectsPage isLoaded() {
         searchInput.shouldBe(visible);
+        return this;
     }
 
-    public void searchForProject(String targetProjectName) {
+    public ProjectsPage searchForProject(String targetProjectName) {
         searchInput.setValue(targetProjectName);
+        return this;
     }
 
     public void selectProject(String targetProjectName) {

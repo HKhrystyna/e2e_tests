@@ -26,6 +26,7 @@ tasks.withType(JavaCompile).configureEach {
 dependencies {
     implementation('io.github.cdimascio:java-dotenv:5.2.2')
     implementation('org.checkerframework:checker-qual:3.37.0')
+    implementation('org.apache.commons:commons-lang3:3.14.0')
 
     implementation('com.codeborne:selenide:7.6.1')
     implementation('org.slf4j:slf4j-simple:2.0.16')
