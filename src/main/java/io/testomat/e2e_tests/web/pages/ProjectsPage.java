@@ -28,8 +28,9 @@ public class ProjectsPage {
         return this;
     }
 
-    public void selectProject(String targetProjectName) {
+    public ProjectsPage selectProject(String targetProjectName) {
         $(byText(targetProjectName)).click();
+        return this;
     }
 
     public void signInSuccess() {

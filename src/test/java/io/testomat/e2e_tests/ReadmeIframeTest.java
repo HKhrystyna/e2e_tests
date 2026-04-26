@@ -21,8 +21,7 @@ public class ReadmeIframeTest extends BaseTest {
     void updateReadmeIframeTest() {
         String randomReadmeText = RandomStringUtils.randomAlphanumeric(10);
 
-        app.projectsPage.isLoaded()
-                .searchForProject(targetProjectName)
+        app.projectsPage.searchForProject(targetProjectName)
                 .selectProject(targetProjectName);
 
         app.projectPage.openReadme().editReadme();
@@ -41,8 +40,7 @@ public class ReadmeIframeTest extends BaseTest {
     void cancelReadmeUpdateIframeTest() {
         String randomReadmeText = RandomStringUtils.randomAlphanumeric(10);
 
-        app.projectsPage.isLoaded()
-                .searchForProject(targetProjectName)
+        app.projectsPage.searchForProject(targetProjectName)
                 .selectProject(targetProjectName);
 
         app.projectPage.openReadme().editReadme();

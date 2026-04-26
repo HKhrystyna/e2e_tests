@@ -6,9 +6,10 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class ProjectPage extends BasePage {
 
-    public void isLoaded(String targetProjectName) {
+    public ProjectPage isLoaded(String targetProjectName) {
         $(".first h2").shouldHave(text(targetProjectName));
         $(".sticky-header [href$='/readme']").shouldBe(visible).shouldHave(text("Readme"));
+        return this;
     }
 
     public ProjectPage openReadme() {
