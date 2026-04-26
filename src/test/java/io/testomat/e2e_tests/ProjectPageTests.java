@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith({TextReportExtension.class})
 public class ProjectPageTests extends BaseTest {
 
@@ -18,52 +16,33 @@ public class ProjectPageTests extends BaseTest {
 
     @Test
     public void userCanFindProjectWithTests() {
-        app.projectsPage.searchForProject(targetProjectName);
-
-        app.projectsPage.selectProject(targetProjectName);
+        app.projectsPage.searchForProject(targetProjectName)
+                .selectProject(targetProjectName);
 
         app.projectPage.isLoaded(targetProjectName);
     }
 
     @Test
     public void userCanSeeProjectDataInSearchResults() {
-        app.projectsPage.searchForProject(targetProjectName);
-
-        var targetProject = app.projectsPage.countOfProjectsShouldBeEqualTo(1).first();
-
-        app.projectsPage.countOfTestsCasesShouldBeEqualTo(targetProject, 0);
-
-        app.projectsPage.projectBadgeIsVisible(targetProject);
-
-        var projectBadge = app.projectsPage.getProjectBadge(targetProject);
-        assertEquals("Classical", projectBadge);
+        app.projectsPage.searchForProject(targetProjectName)
+                .countOfProjectsShouldBeEqualTo(1)
+                .countOfTestsCasesShouldBeEqualTo(targetProjectName, 0)
+                .shouldHaveProjectBadge(targetProjectName, "Classical");
     }
 
     @Test
     public void userCanSwitchListAndCardViews() {
-        app.projectsPage.switchFromCardToListView();
-
-        app.projectsPage.projectsTableIsVisible();
-
-        app.projectsPage.projectListShouldNotBeEmpty();
-
-        app.projectsPage.switchFromListToCardView();
+        app.projectsPage.switchFromCardToListView()
+                .projectsTableIsVisible()
+                .projectListShouldNotBeEmpty()
+                .switchFromListToCardView();
     }
 
     @Test
     public void userCanSwitchProjectsPages() {
-        app.projectsPage.openSpecificProjectsPage("Free Projects");
-
-        app.projectsPage.projectsPageTooltipIsVisible();
-
-        var freeProjectsPageTooltip = app.projectsPage.getProjectsPageTooltip();
-        assertEquals("Free Plan", freeProjectsPageTooltip);
-
-        app.projectsPage.openSpecificProjectsPage("QA Club Lviv");
-
-        app.projectsPage.projectsPageTooltipIsVisible();
-
-        var enterpriseProjectsPageTooltip = app.projectsPage.getProjectsPageTooltip();
-        assertEquals("Enterprise Plan", enterpriseProjectsPageTooltip);
+        app.projectsPage.openSpecificProjectsPage("Free Projects")
+                .shouldHaveProjectsPageTooltip("Free Plan")
+                .openSpecificProjectsPage("QA Club Lviv")
+                .shouldHaveProjectsPageTooltip("Enterprise Plan");
     }
 }
