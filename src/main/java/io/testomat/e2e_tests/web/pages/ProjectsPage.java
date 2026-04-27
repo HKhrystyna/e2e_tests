@@ -1,6 +1,5 @@
 package io.testomat.e2e_tests.web.pages;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
@@ -19,66 +18,82 @@ public class ProjectsPage {
         Selenide.open("/");
     }
 
-    public void isLoaded() {
+    public ProjectsPage isLoaded() {
         searchInput.shouldBe(visible);
+        return this;
     }
 
-    public void searchForProject(String targetProjectName) {
+    public ProjectsPage searchForProject(String targetProjectName) {
         searchInput.setValue(targetProjectName);
+        return this;
     }
 
-    public void selectProject(String targetProjectName) {
+    public ProjectsPage selectProject(String targetProjectName) {
         $(byText(targetProjectName)).click();
+        return this;
     }
 
     public void signInSuccess() {
         $("#container .common-flash-success").shouldBe(visible);
     }
 
-    public ElementsCollection countOfProjectsShouldBeEqualTo(int expectedCount) {
-        return $$("#grid ul li").filter(visible).shouldHave(size(expectedCount));
+    public ProjectsPage countOfProjectsShouldBeEqualTo(int expectedCount) {
+        $$("#grid ul li").filter(visible).shouldHave(size(expectedCount));
+        return this;
     }
 
-    public void countOfTestsCasesShouldBeEqualTo(SelenideElement targetProject, int expectedCount) {
-        targetProject.shouldHave(text(expectedCount + " tests"));
+    private SelenideElement projectItem(String projectName) {
+        return $$("#grid ul li").findBy(text(projectName));
     }
 
-    public void projectBadgeIsVisible(SelenideElement targetProject) {
-        targetProject.$("a .common-badge-project-default").shouldBe(visible);
+    public ProjectsPage countOfTestsCasesShouldBeEqualTo(String projectName, int expectedCount) {
+        projectItem(projectName).shouldHave(text(expectedCount + " tests"));
+        return this;
     }
 
-    public String getProjectBadge(SelenideElement targetProject) {
-        return targetProject.$("a .common-badge-project-default").getText();
+    public ProjectsPage shouldHaveProjectBadge(String projectName, String expectedBadge) {
+        projectItem(projectName)
+                .$("a .common-badge-project-default")
+                .shouldBe(visible)
+                .shouldHave(text(expectedBadge));
+        return this;
     }
 
-    public void switchFromCardToListView() {
+    public ProjectsPage switchFromCardToListView() {
         $("#table-icon").click();
         $("#myTable").shouldBe(visible);
+        return this;
     }
 
-    public void switchFromListToCardView() {
+    public ProjectsPage switchFromListToCardView() {
         $("#table-icon").click();
         $("#grid").shouldBe(visible);
+        return this;
     }
 
-    public void projectsTableIsVisible() {
+    public ProjectsPage projectsTableIsVisible() {
         $("#team-members").shouldBe(visible);
+        return this;
     }
 
-    public void projectListShouldNotBeEmpty() {
+    public ProjectsPage projectListShouldNotBeEmpty() {
         $("#team-members .bg-gray-50").shouldBe(visible);
+        return this;
     }
 
-    public void openSpecificProjectsPage(String optionText) {
-        $("#content-desktop #company_id").click();
-        $$("#content-desktop #company_id option").findBy(text(optionText)).click();
+    public ProjectsPage openSpecificProjectsPage(String optionText) {
+        $("#content-desktop #company_id").selectOption(optionText);
+        return this;
     }
 
-    public void projectsPageTooltipIsVisible() {
-        $(".common-page-header-left .tooltip-project-plan").shouldBe(visible);
+    private SelenideElement projectsPageTooltip() {
+        return $(".common-page-header-left .tooltip-project-plan");
     }
 
-    public String getProjectsPageTooltip() {
-        return $(".common-page-header-left .tooltip-project-plan").getText();
+    public ProjectsPage shouldHaveProjectsPageTooltip(String expectedText) {
+        projectsPageTooltip()
+                .shouldBe(visible)
+                .shouldHave(text(expectedText));
+        return this;
     }
 }
