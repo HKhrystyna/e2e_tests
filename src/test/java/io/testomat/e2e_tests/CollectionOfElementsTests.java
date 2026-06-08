@@ -32,7 +32,7 @@ public class CollectionOfElementsTests extends BaseTest {
     @Test
     @DisplayName("All projects should have correct tests count")
     void allProjectsShouldHaveCorrectTests() {
-        var labelCountOfTests = $$("ul li p").shouldHave(CollectionCondition.sizeGreaterThan(0));
+        var labelCountOfTests = $$("#grid ul li p").shouldHave(CollectionCondition.sizeGreaterThan(0));
 
         for (SelenideElement labelCountOfTest : labelCountOfTests) {
             labelCountOfTest.shouldHave(Condition.text("2 tests")
@@ -44,7 +44,8 @@ public class CollectionOfElementsTests extends BaseTest {
     @Test
     @DisplayName("All BDD projects should have BDD badge")
     void allBDDProjectsShouldHaveBDDBadge() {
-        List<SelenideElement> bddProjects = $$("ul li")
+        List<SelenideElement> bddProjects = $$("#grid ul li")
+                .shouldHave(CollectionCondition.sizeGreaterThan(0))
                 .stream()
                 .filter(project ->
                         project.$("h3").getText().contains("BDD"))
