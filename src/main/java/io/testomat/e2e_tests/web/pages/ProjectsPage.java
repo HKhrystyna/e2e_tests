@@ -60,13 +60,17 @@ public class ProjectsPage {
     }
 
     public ProjectsPage switchFromCardToListView() {
-        $("#table-icon").click();
+        if (!$("#myTable").isDisplayed()) {
+            $("#table-icon").click();
+        }
         $("#myTable").shouldBe(visible);
         return this;
     }
 
     public ProjectsPage switchFromListToCardView() {
-        $("#table-icon").click();
+        if (!$("#grid").isDisplayed()) {
+            $("#table-icon").click();
+        }
         $("#grid").shouldBe(visible);
         return this;
     }
